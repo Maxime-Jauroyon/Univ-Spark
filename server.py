@@ -3,68 +3,80 @@ import socket
 import json
 import sys
 
-if len(sys.argv) != 3:
-    print("Usage: server.py <hostname> <port>", file=sys.stderr)
-    sys.exit(-1)
 
-# Define Reddit API credentials
-client_id = "zqRTjPqgLq6yqzJPBcYM8w" # OUR_CLIENT_ID
-client_secret = "wLc64W4xQqtu05OuHyVDkhiWKIZGHQ" # OUR_CLIENT_SECRET
-# username = "OUR_USERNAME" not necessary for read-only access
-# password = "OUR_PASSWORD"
-user_agent = "web:RedditStreamingSentimentAnalysis:v1.0.0"# OUR_USER_AGENT
+if __name__=="__main__":
+    # Check if the correct number of arguments were passed
+    if len(sys.argv) != 3:
+        print("Usage: server.py <hostname> <port>", file=sys.stderr)
+        sys.exit(-1)
 
-# Define socket host and port
-host = sys.argv[1] # "localhost"
-port = int(sys.argv[2]) # 8888
+    # Define Reddit API credentials
+    client_id = "zqRTjPqgLq6yqzJPBcYM8w" # OUR_CLIENT_ID
+    client_secret = "wLc64W4xQqtu05OuHyVDkhiWKIZGHQ" # OUR_CLIENT_SECRET
+    # username = "OUR_USERNAME" not necessary for read-only access
+    # password = "OUR_PASSWORD"
+    user_agent = "web:RedditStreamingSentimentAnalysis:v1.0.0"# OUR_USER_AGENT
 
-# Create a Reddit instance and authenticate
-reddit = praw.Reddit(
-    client_id=client_id,
-    client_secret=client_secret,
-    # username=username,
-    # password=password,
-    user_agent=user_agent,
-)
+    # Define socket host and port
+    host = sys.argv[1] # "localhost"
+    port = int(sys.argv[2]) # 8888
 
-# Create a socket object
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # Create a Reddit instance and authenticate
+    reddit = praw.Reddit(
+        client_id=client_id,
+        client_secret=client_secret,
+        # username=username,
+        # password=password,
+        user_agent=user_agent,
+    )
 
-# Bind the socket to a specific host and port
-server_socket.bind((host, port))
+    # Create a socket object
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Listen for incoming connections
-server_socket.listen(1)
+    try:
+        # Bind the socket to a specific host and port
+        server_socket.bind((host, port))
+    except socket.error as e:
+        print(f"Failed to bind socket: {e}")
+        sys.exit(-1)
 
-# Wait for a client to connect
-print("Waiting for a client to connect...")
-client_socket, client_address = server_socket.accept()
-print(f"Client connected from {client_address}")
+    # Listen for incoming connections
+    server_socket.listen(1)
 
+    try:
+        # Wait for a client to connect
+        print("Waiting for a client to connect...")
+        client_socket, client_address = server_socket.accept()
+        print(f"Client connected from {client_address}")
+    except KeyboardInterrupt:
+        print("Shutting down server...")
+        server_socket.close()
+        sys.exit(-1)
+    except Exception as e:
+        print(f"Failed to accept client connection: {e}")
+        server_socket.close()
+        sys.exit(-1)
 
-subreddit = reddit.subreddit("python")
-for submission in subreddit.stream.submissions():
-    # message = ""
-    submission.comments.replace_more(limit=None)
-    for comment in submission.comments.list():
-        message = comment.body + " "
-        client_socket.send(message.encode('utf-8'))
-        # print(f"Sent data to client: {message}")
- 
+    try:
+        # Send data to client
+        subreddit = reddit.subreddit("python")
+        for submission in subreddit.stream.submissions():
+            submission.comments.replace_more(limit=None)
+            for comment in submission.comments.list():
+                message = comment.body + "\n"
+                client_socket.send(message.encode('utf-8'))
+                # print(f"Sent data to client: {message}")
+    except KeyboardInterrupt:
+        print("Shutting down server...")
+        client_socket.close()
+        server_socket.close()
+        sys.exit(-1)
+    except Exception as e:
+        print("Client disconnected")
+        print(f"Error received: {e}")
+        client_socket.close()
+        server_socket.close()
+        sys.exit(-1)
 
-# # Iterate over the "hot" posts in the "python" subreddit
-# for post in reddit.subreddit("python").hot(limit=10):
-#     # Convert the post data to a JSON string
-#     post_data = json.dumps({
-#         "title": post.title,
-#         "url": post.url,
-#         "author": post.author.name,
-#         "created_utc": post.created_utc,
-#     })
-#     # Send the post data to the client socket
-#     client_socket.sendall(post_data.encode("utf-8"))
-#     print(f"Sent data to client: {post_data}")
-
-# Close the client socket and server socket
-client_socket.close()
-server_socket.close()
+    client_socket.close()
+    server_socket.close()
