@@ -1,12 +1,45 @@
-# Univ-Spark
+# Real-Time Sentiment Analysis of Reddit Data using Spark Streaming
 
-Downloading the Reddit API : pip install praw
+## Description
+This project showcases how to leverage Spark Streaming to perform real-time data processing. We utilized the Reddit API to source data and the PRAW library to access it.
 
-Downloading the NLP API : pip install textblob
+The data is transmitted from a server to a client, which processes it in real-time. The primary objective of this project is to conduct sentiment analysis on the Reddit data and cluster it, followed by plotting.
 
-Downloading pyspark : pip install pyspark
+To analyze sentiment, we employed the TextBlob library, and for real-time data processing, we utilized the Spark Streaming library.
 
-Link where we created our account we used : https://www.reddit.com/prefs/apps 
+Overall, this project provides a practical example of real-time data processing and sentiment analysis using Spark Streaming, PRAW, and TextBlob libraries.
+
+## Requirements
+```
+pip install praw
+```
+
+```
+pip install textblob
+```
+
+```
+pip install pyspark
+```
+
+## Files
+- `server.py` : the server who will send the Reddit data
+- `process.ipynb` : the notebook who will receive the Reddit data and process it
+
+## How to run
+1. First launch the server who will send the Reddit data : `python3 server.py`
+2. Open the notebook `process.ipynb` and run it
+
+## Notes
+To get the Reddit data we used the PRAW library : https://praw.readthedocs.io/en/latest/
+
+
+
+
+
+
+
+<!-- Link where we created our account we used : https://www.reddit.com/prefs/apps 
 (which currently don't work so the old link https://old.reddit.com/prefs/apps/ is what we really used)
 
 Spark Streaming Programming Guide : https://spark.apache.org/docs/latest/streaming-programming-guide.html
@@ -17,4 +50,4 @@ then you can run the notebook
 
 How to run (docker):
 first launch the server who will send the Reddit data : spark-submit server.py localhost 8888
-then you can run the notebook
+then you can run the notebook -->
