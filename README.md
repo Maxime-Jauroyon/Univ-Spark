@@ -27,8 +27,11 @@ pip install pyspark
 - `process.ipynb` : the notebook who will receive the Reddit data and process it
 
 ## How to run
-1. First launch the server who will send the Reddit data : `python3 server.py`
-2. Open the notebook `process.ipynb` and run it
+1. Sign in to your reddit account (If you don't have account, you need to create one) and create an app to get the credentials : https://www.reddit.com/prefs/apps
+
+2. Modify the `server.py` file with your credentials
+3. Launch the server who will send the Reddit data : `python3 server.py`
+4. Open the notebook `process.ipynb` and run it
 
 ## Notes
 To get the Reddit data we used the PRAW library : https://praw.readthedocs.io/en/latest/
