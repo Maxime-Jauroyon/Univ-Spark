@@ -23,15 +23,15 @@ pip install pyspark
 ```
 
 ## Files
-- `server.py` : the server who will send the Reddit data
+- `stream.ipynb` : the server who will send the Reddit data
 - `process.ipynb` : the notebook who will receive the Reddit data and process it
+- `viz.ipynb` : the notebook who will plot the cluster sizes (refreshed every seconds)
 
 ## How to run
-1. Sign in to your reddit account (If you don't have account, you need to create one) and create an app to get the credentials : https://www.reddit.com/prefs/apps
-
-2. Modify the `server.py` file with your credentials
-3. Launch the server who will send the Reddit data : `python3 server.py`
-4. Open the notebook `process.ipynb` and run it
+1. Open the notebook `viz.ipynb` and run it
+2. Open the notebook `stream.ipynb` and run it, will send the Reddit data 
+3. Open the notebook `process.ipynb` and run it
+4. Go back to `viz.ipynb` to see the cluster sizes evolution
 
 ## Notes
 To get the Reddit data we used the PRAW library : https://praw.readthedocs.io/en/latest/
@@ -42,15 +42,12 @@ To get the Reddit data we used the PRAW library : https://praw.readthedocs.io/en
 
 
 
-<!-- Link where we created our account we used : https://www.reddit.com/prefs/apps 
+<!-- old readme
+Link where we created our account we used : https://www.reddit.com/prefs/apps 
 (which currently don't work so the old link https://old.reddit.com/prefs/apps/ is what we really used)
 
 Spark Streaming Programming Guide : https://spark.apache.org/docs/latest/streaming-programming-guide.html
 
 How to run (local):
 first launch the server who will send the Reddit data : python3 server.py localhost 8888
-then you can run the notebook
-
-How to run (docker):
-first launch the server who will send the Reddit data : spark-submit server.py localhost 8888
 then you can run the notebook -->
